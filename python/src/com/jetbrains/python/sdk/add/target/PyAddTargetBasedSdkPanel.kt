@@ -4,6 +4,7 @@ package com.jetbrains.python.sdk.add.target
 import com.intellij.CommonBundle
 import com.intellij.execution.target.IncompleteTargetEnvironmentConfiguration
 import com.intellij.execution.target.TargetEnvironmentConfiguration
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.Sdk
@@ -12,6 +13,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.Splitter
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.popup.ListItemDescriptorAdapter
+import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.JBCardLayout
@@ -24,10 +26,8 @@ import com.intellij.util.ui.UIUtil
 import com.jetbrains.python.packaging.PyExecutionException
 import com.jetbrains.python.sdk.PreferredSdkComparator
 import com.jetbrains.python.sdk.PythonSdkType
+import com.jetbrains.python.sdk.add.*
 import com.jetbrains.python.sdk.add.CreateSdkInterrupted
-import com.jetbrains.python.sdk.add.PyAddSdkView
-import com.jetbrains.python.sdk.add.PyAddSystemWideInterpreterPanel
-import com.jetbrains.python.sdk.add.showProcessExecutionErrorDialog
 import com.jetbrains.python.sdk.add.target.conda.PyAddCondaPanelModel
 import com.jetbrains.python.sdk.add.target.conda.PyAddCondaPanelView
 import com.jetbrains.python.sdk.conda.PyCondaSdkCustomizer
@@ -66,7 +66,13 @@ class PyAddTargetBasedSdkPanel(private val project: Project?,
       .filter { it.sdkType is PythonSdkType && it.sdkSeemsValid }
       .sortedWith(PreferredSdkComparator())
     val (panels, initiallySelectedPanel) = createPanels(sdks)
-    mainPanel.add(SPLITTER_COMPONENT_CARD_PANE, createCardSplitter(panels, initiallySelectedPanel))
+    val mPanels = panels.toMutableList()
+    val extendedPanels = PyAddSdkProvider.EP_NAME.extensions
+      .mapNotNull {
+        it.safeCreateView(project = project, module = module, existingSdks = existingSdks, context=context)
+      }
+    mPanels.addAll(extendedPanels)
+    mainPanel.add(SPLITTER_COMPONENT_CARD_PANE, createCardSplitter(mPanels, initiallySelectedPanel))
     return mainPanel
   }
 
@@ -184,6 +190,8 @@ class PyAddTargetBasedSdkPanel(private val project: Project?,
   }
 
   companion object {
+
+    private val LOG: Logger = Logger.getInstance(PyAddTargetBasedSdkPanel::class.java)
     private fun allowCreatingNewEnvironments(project: Project?) =
       project != null || !PlatformUtils.isPyCharm() || PlatformUtils.isPyCharmEducational()
 
@@ -205,5 +213,17 @@ class PyAddTargetBasedSdkPanel(private val project: Project?,
         (dialogPanel ?: this).border = JBUI.Borders.empty(4, 9, 4, 15)
       }
     }
+    private fun PyAddSdkProvider.safeCreateView(project: Project?,
+                                                module: Module?,
+                                                existingSdks: List<Sdk>,
+                                                context: UserDataHolder): PyAddSdkView? {
+      try {
+        return createView(project, module, null, existingSdks, context)
+      }
+      catch (e: NoClassDefFoundError) {
+        PyAddTargetBasedSdkPanel.LOG.info(e)
+        return null
+      }
+  }
   }
 }
