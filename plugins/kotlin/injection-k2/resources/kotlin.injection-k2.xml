@@ -7,7 +7,7 @@
     <languageInjectionContributor language="kotlin"
                                   implementationClass="org.jetbrains.kotlin.idea.k2.injection.K2KotlinLanguageInjectionContributor"/>
     <languageInjectionPerformer language="kotlin"
-                                implementationClass="org.jetbrains.kotlin.idea.k2.injection.KotlinLanguageInjectionPerformer"/>
+                                implementationClass="org.jetbrains.kotlin.idea.k2.injection.K2KotlinLanguageInjectionPerformer"/>
 
     <regExpLanguageHost forClass="org.jetbrains.kotlin.psi.KtStringTemplateExpression"
                         implementationClass="com.intellij.psi.impl.JavaRegExpHost"/>

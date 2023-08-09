@@ -14,9 +14,9 @@ import org.junit.internal.runners.JUnit38ClassRunner
 import org.junit.runner.RunWith
 
 @RunWith(JUnit38ClassRunner::class)
-abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
-    class TestBucket1 : K2KotlinInjectionTest() {
-        fun testInjectionOnJavaPredefinedMethodWithAnnotation() = doInjectionPresentTest(
+abstract class KotlinInjectionTest: K2AbstractInjectionTest() {
+    class TestBucket1 : KotlinInjectionTest() {
+        fun testInjectionOnJavaPredefinedMethodWithAnnotation() = doK2InjectionPresentTest(
             """
             val test1 = java.util.regex.Pattern.compile("<caret>pattern")
             """,
@@ -36,7 +36,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             try {
                 Configuration.getInstance().replaceInjections(listOf(customInjection), listOf(), true)
 
-                doInjectionPresentTest(
+                doK2InjectionPresentTest(
                     """
                     val stringBuilder = StringBuilder().replace(0, 0, "<caret><html></html>")
                     """,
@@ -48,14 +48,14 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             }
         }
 
-        fun testInjectionWithCommentOnProperty() = doInjectionPresentTest(
+        fun testInjectionWithCommentOnProperty() = doK2InjectionPresentTest(
             """
             //language=file-reference
             val test = "<caret>simple"
             """
         )
 
-        fun testInjectionWithUsageOnReceiverWithRuntime() = doInjectionPresentTest(
+        fun testInjectionWithUsageOnReceiverWithRuntime() = doK2InjectionPresentTest(
             """
             val test = "<caret>some"
             fun foo() = test.toRegex()
@@ -63,7 +63,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = RegExpLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionWithUsageInParameterWithRuntime() = doInjectionPresentTest(
+        fun testInjectionWithUsageInParameterWithRuntime() = doK2InjectionPresentTest(
             """
             val test = "<caret>some"
             fun foo() = Regex(test)
@@ -79,7 +79,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             """
         )
 
-        fun testInjectionWithMultipleCommentsOnFun() = doInjectionPresentTest(
+        fun testInjectionWithMultipleCommentsOnFun() = doK2InjectionPresentTest(
             """
             // Some comment
             // Other comment
@@ -88,7 +88,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             """
         )
 
-        fun testInjectionWithAnnotationOnPropertyWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionWithAnnotationOnPropertyWithAnnotation() = doK2InjectionPresentTest(
             """
             @org.intellij.lang.annotations.Language("file-reference")
             val test = "<caret>simple"
@@ -231,7 +231,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
         )
     }
 
-    class TestBucket2 : K2KotlinInjectionTest() {
+    class TestBucket2 : KotlinInjectionTest() {
         fun testRemoveInjectionWithCommentAfterKDoc() = doRemoveInjectionTest(
             """
             /**Property*/
@@ -260,7 +260,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             """
         )
 
-        fun testInjectionWithUsageInFunctionWithMarkedParameterWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionWithUsageInFunctionWithMarkedParameterWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -273,7 +273,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOfCustomParameterWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOfCustomParameterWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -284,7 +284,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOfCustomParameterInConstructorWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOfCustomParameterInConstructorWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -295,7 +295,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOfCustomParameterDefaultCallWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOfCustomParameterDefaultCallWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -306,7 +306,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOfCustomParameterInJavaConstructorWithAnnotationWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOfCustomParameterInJavaConstructorWithAnnotationWithAnnotation() = doK2InjectionPresentTest(
             """
             fun bar() { Test("<caret>some") }
             """,
@@ -321,7 +321,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOfCustomParameterJavaWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOfCustomParameterJavaWithAnnotation() = doK2InjectionPresentTest(
             """
             fun bar() { Test.foo("<caret>some") }
             """,
@@ -336,7 +336,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOnInterpolationWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOnInterpolationWithAnnotation() = doK2InjectionPresentTest(
             """
             val b = 2
 
@@ -351,7 +351,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "simplemissingValue.kt"
         )
 
-        fun testInjectionOnInterpolatedStringWithComment() = doInjectionPresentTest(
+        fun testInjectionOnInterpolatedStringWithComment() = doK2InjectionPresentTest(
             """
             val some = 42
             // language=HTML
@@ -365,7 +365,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "<html>some</html>"
         )
 
-        fun testEditorShortShreadsInInterpolatedInjection() = doInjectionPresentTest(
+        fun testEditorShortShreadsInInterpolatedInjection() = doK2InjectionPresentTest(
             """
             val s = 42
             // language=TEXT
@@ -383,7 +383,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "s text smissingValues text s"
         )
 
-        fun testEditorLongShreadsInInterpolatedInjection() = doInjectionPresentTest(
+        fun testEditorLongShreadsInInterpolatedInjection() = doK2InjectionPresentTest(
             """
             val s = 42
             // language=TEXT
@@ -401,7 +401,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "missingValue text missingValuesmissingValue text missingValue"
         )
 
-        fun testEditorShreadsWithEscapingInjection() = doInjectionPresentTest(
+        fun testEditorShreadsWithEscapingInjection() = doK2InjectionPresentTest(
             """
             // language=TEXT
             val test = "\rte<caret>xt\ttext\n\t"
@@ -412,7 +412,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             )
         )
 
-        fun testEditorShreadsInInterpolatedWithEscapingInjection() = doInjectionPresentTest(
+        fun testEditorShreadsInInterpolatedWithEscapingInjection() = doK2InjectionPresentTest(
             """
             val s = 1
             // language=TEXT
@@ -426,7 +426,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             )
         )
 
-        fun testSuffixPrefixWithAnnotation() = doInjectionPresentTest(
+        fun testSuffixPrefixWithAnnotation() = doK2InjectionPresentTest(
             """
             @org.intellij.lang.annotations.Language("TEXT", prefix = "abc", suffix = "ghi")
             val test = "<caret>def"
@@ -435,7 +435,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             shreds = listOf(ShredInfo(range(0, 9), hostRange = range(1, 4), prefix = "abc", suffix = "ghi"))
         )
 
-        fun testSuffixPrefixWithCallWithAnnotation() = doInjectionPresentTest(
+        fun testSuffixPrefixWithCallWithAnnotation() = doK2InjectionPresentTest(
             """
             fun highlight(@org.intellij.lang.annotations.Language("TEXT", prefix = "fun __f(it: dynamic) = ", suffix = ";") code: String) {}
 
@@ -447,7 +447,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             shreds = listOf(ShredInfo(range(0, 30), hostRange = range(1, 7), prefix = "fun __f(it: dynamic) = ", suffix = ";"))
         )
 
-        fun testSuffixPrefixInComment() = doInjectionPresentTest(
+        fun testSuffixPrefixInComment() = doK2InjectionPresentTest(
             """
             // language="TEXT" prefix="abc" suffix=ghi
             val test = "<caret>def"
@@ -456,7 +456,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             shreds = listOf(ShredInfo(range(0, 9), hostRange = range(1, 4), prefix = "abc", suffix = "ghi"))
         )
 
-        fun testSuffixAfterInterpolationInMultiline() = doInjectionPresentTest(
+        fun testSuffixAfterInterpolationInMultiline() = doK2InjectionPresentTest(
             """
         //language=TEXT suffix="check"
         val some = 1
@@ -471,7 +471,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             )
         )
 
-        fun testMutation() = doInjectionPresentTest(
+        fun testMutation() = doK2InjectionPresentTest(
             """
             @org.intellij.lang.annotations.Language("HTML")
             var html = ""
@@ -484,7 +484,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "<html></html>"
         )
 
-        fun testMutationNested() = doInjectionPresentTest(
+        fun testMutationNested() = doK2InjectionPresentTest(
             """
             class A { val b: B = B() }
             class B {
@@ -500,7 +500,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "<html></html>"
         )
 
-        fun testMutationAbstract() = doInjectionPresentTest(
+        fun testMutationAbstract() = doK2InjectionPresentTest(
             """
             abstract class A {
                 @org.intellij.lang.annotations.Language("HTML")
@@ -514,7 +514,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             injectedText = "<html></html>"
         )
 
-        fun testPlusEqMutation() = doInjectionPresentTest(
+        fun testPlusEqMutation() = doK2InjectionPresentTest(
             """
             @org.intellij.lang.annotations.Language("TEXT")
             var text = "hello"
@@ -528,7 +528,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
         )
     }
 
-    class TestBucket3 : K2KotlinInjectionTest() {
+    class TestBucket3 : KotlinInjectionTest() {
         fun testJavaAnnotationsPattern() {
             myFixture.addClass(
                 """
@@ -763,7 +763,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             )
         }
 
-        fun testInjectionOnReturnResultWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOnReturnResultWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -775,7 +775,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOnReturnResultWithElvisWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOnReturnResultWithElvisWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -787,7 +787,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionOnReturnResultWithIfWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionOnReturnResultWithIfWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -799,7 +799,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionExpressionBodyWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionExpressionBodyWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -809,7 +809,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionExpressionBodyElvisWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionExpressionBodyElvisWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -819,7 +819,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionWithUsageInFunctionWithMarkedSecondNamedParameterWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionWithUsageInFunctionWithMarkedSecondNamedParameterWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -830,7 +830,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
             languageId = HTMLLanguage.INSTANCE.id, unInjectShouldBePresent = false
         )
 
-        fun testInjectionWithUsageInFunctionWithMarkedFirstNamedParameterWithAnnotation() = doInjectionPresentTest(
+        fun testInjectionWithUsageInFunctionWithMarkedFirstNamedParameterWithAnnotation() = doK2InjectionPresentTest(
             """
             import org.intellij.lang.annotations.Language
 
@@ -859,7 +859,7 @@ abstract class K2KotlinInjectionTest: AbstractInjectionTest() {
         try {
             Configuration.getInstance().replaceInjections(listOf(customInjection), listOf(), true)
 
-            doInjectionPresentTest(
+            doK2InjectionPresentTest(
                 kotlinCode, null,
                 injectedLanguage,
                 unInjectShouldBePresent = false
